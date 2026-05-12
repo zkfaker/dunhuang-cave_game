@@ -37,6 +37,28 @@ body {
   }
 
   .puzzle-card {
+    width: calc(100vh - 32px);
+    max-width: calc(100vh - 32px);
+    max-height: calc(100vw - 32px);
+  }
+
+  .puzzle-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dialog-card {
+    width: calc(100vh - 32px);
+    max-width: calc(100vh - 32px);
+    max-height: calc(100vw - 32px);
+  }
+
+  .dialog-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  .puzzle-card {
     width: min(720px, 95vmax);
     max-width: 95vmax;
   }
