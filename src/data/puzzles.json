@@ -1,0 +1,34 @@
+{
+  "phases": [
+    {
+      "id": 1,
+      "key": "intro",
+      "title": "Entry Sequence",
+      "summary": "Starter guidance and west wall unlock."
+    },
+    {
+      "id": 2,
+      "key": "deer",
+      "title": "Deer Trail",
+      "summary": "Sequence puzzle on the west wall."
+    },
+    {
+      "id": 3,
+      "key": "vows",
+      "title": "Secret Vows",
+      "summary": "Collect seals and match slots."
+    },
+    {
+      "id": 4,
+      "key": "truth",
+      "title": "Reveal the Truth",
+      "summary": "Choice puzzle and branching endings."
+    },
+    {
+      "id": 5,
+      "key": "nirvana",
+      "title": "Return to Light",
+      "summary": "Pillar click order finale."
+    }
+  ]
+}

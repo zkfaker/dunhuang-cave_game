@@ -1,0 +1,39 @@
+{
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}"
+  ],
+  "python.condaPath": "D:\\Miniconda\\Scripts\\conda.exe",
+  "terminal.integrated.env.windows": {
+    "PYTHONPATH": "${workspaceFolder}"
+  },
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": [
+        "-ExecutionPolicy",
+        "RemoteSigned",
+        "-NoExit",
+        "-Command",
+        "$env:CONDA_CHANGEPS1 = 'yes'; chcp 65001; & 'D:\\Miniconda\\Scripts\\conda.exe' shell.powershell activate my_env_python | Invoke-Expression"
+      ]
+    },
+    "Command Prompt": {
+      "path": [
+        "C:\\Windows\\System32\\cmd.exe"
+      ],
+      "args": [
+        "/K",
+        "chcp 65001 && \"D:\\Miniconda\\Scripts\\conda.exe\" shell.cmd activate my_env_python"
+      ]
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "workbench.editor.enablePreview": false,
+  "python-envs.defaultEnvManager": "ms-python.python:conda",
+  "python-envs.defaultPackageManager": "ms-python.python:conda"
+}

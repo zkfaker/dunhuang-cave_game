@@ -1,0 +1,13 @@
+{
+  "hotspots": [
+    {
+      "id": "pillar-front",
+      "label": "Center pillar front",
+      "position": [0, 0, 0],
+      "radius": 0.6,
+      "type": "intro",
+      "phase": 1,
+      "interaction": "click"
+    }
+  ]
+}
