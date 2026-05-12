@@ -109,41 +109,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 900px)").matches;
-    if (!isMobile) {
-      return undefined;
-    }
-
-    const tryLockLandscape = () => {
-      if (screen.orientation?.lock) {
-        screen.orientation.lock("landscape").catch(() => {});
-      }
-    };
-
-    const handleFirstInteraction = () => {
-      tryLockLandscape();
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-    };
-
-    window.addEventListener("pointerdown", handleFirstInteraction, {
-      passive: true,
-      once: true,
-    });
-    window.addEventListener("touchstart", handleFirstInteraction, {
-      passive: true,
-      once: true,
-    });
-
-    tryLockLandscape();
-
-    return () => {
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-    };
-  }, []);
-
 
   useEffect(() => {
     const supported = isWebGLAvailable();

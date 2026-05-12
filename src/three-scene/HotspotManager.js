@@ -213,14 +213,38 @@ export default class HotspotManager {
     this.updateHover(null);
   }
 
+  isRotatedLayout() {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return false;
+    }
+    return window.matchMedia(
+      "(max-width: 900px) and (orientation: portrait)"
+    ).matches;
+  }
+
   getHit(event) {
     if (!this.camera || !this.domElement || this.hotspots.size === 0) {
       return null;
     }
 
     const rect = this.domElement.getBoundingClientRect();
-    this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    if (this.isRotatedLayout()) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const vX = event.clientX - centerX;
+      const vY = event.clientY - centerY;
+      const unrotX = -vY;
+      const unrotY = vX;
+      const unrotWidth = rect.height;
+      const unrotHeight = rect.width;
+      const localX = unrotX + unrotWidth / 2;
+      const localY = unrotY + unrotHeight / 2;
+      this.pointer.x = (localX / unrotWidth) * 2 - 1;
+      this.pointer.y = -(localY / unrotHeight) * 2 + 1;
+    } else {
+      this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    }
 
     this.raycaster.setFromCamera(this.pointer, this.camera);
 
