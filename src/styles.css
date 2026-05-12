@@ -35,6 +35,23 @@ body {
     transform: translate(-50%, -50%) rotate(90deg);
     transform-origin: center;
   }
+
+  .puzzle-card {
+    width: min(720px, 95vmax);
+    max-width: 95vmax;
+  }
+
+  .dialog-card {
+    width: min(520px, 92vmax);
+    max-width: 92vmax;
+    max-height: 88vmax;
+  }
+
+  .dialog-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
 }
 
 .scene-root {
