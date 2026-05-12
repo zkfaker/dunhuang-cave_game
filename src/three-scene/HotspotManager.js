@@ -233,8 +233,8 @@ export default class HotspotManager {
       const centerY = rect.top + rect.height / 2;
       const vX = event.clientX - centerX;
       const vY = event.clientY - centerY;
-      const unrotX = -vY;
-      const unrotY = vX;
+      const unrotX = vY;
+      const unrotY = -vX;
       const unrotWidth = rect.height;
       const unrotHeight = rect.width;
       const localX = unrotX + unrotWidth / 2;
