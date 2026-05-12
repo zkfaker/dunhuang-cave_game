@@ -92,6 +92,7 @@ function App() {
   const [decisionOpen, setDecisionOpen] = useState(false);
   const [synthesisOpen, setSynthesisOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [needsLandscape, setNeedsLandscape] = useState(false);
 
   const handleMoveStart = (direction) => {
     managerRef.current?.setMoveState(direction, true);
@@ -108,6 +109,42 @@ function App() {
       callback();
     }
   };
+
+  const requestLandscape = () => {
+    if (screen.orientation?.lock) {
+      screen.orientation.lock("landscape").catch(() => {});
+    }
+  };
+
+  useEffect(() => {
+    const query = window.matchMedia("(orientation: portrait)");
+    const update = () => {
+      const isPortrait = query.matches;
+      const isSmallScreen = window.innerWidth <= 900;
+      if (isPortrait && isSmallScreen) {
+        requestLandscape();
+      }
+      setNeedsLandscape(isPortrait && isSmallScreen);
+    };
+
+    update();
+
+    if (query.addEventListener) {
+      query.addEventListener("change", update);
+    } else {
+      query.addListener(update);
+    }
+    window.addEventListener("resize", update);
+
+    return () => {
+      if (query.removeEventListener) {
+        query.removeEventListener("change", update);
+      } else {
+        query.removeListener(update);
+      }
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   useEffect(() => {
     const supported = isWebGLAvailable();
@@ -140,8 +177,58 @@ function App() {
       }
     };
 
+    const isEditableTarget = (target) => {
+      if (!target) {
+        return false;
+      }
+      if (target.isContentEditable) {
+        return true;
+      }
+      const tagName = target.tagName?.toLowerCase();
+      return tagName === "input" || tagName === "textarea" || tagName === "select";
+    };
+
+    const getMoveDirectionFromKey = (key) => {
+      if (!key) {
+        return null;
+      }
+      switch (key.toLowerCase()) {
+        case "w":
+          return "forward";
+        case "s":
+          return "backward";
+        case "a":
+          return "left";
+        case "d":
+          return "right";
+        default:
+          return null;
+      }
+    };
+
     const handleWindowBlur = () => {
       manager.stopMovement();
+    };
+
+    const handleMoveKeydown = (event) => {
+      if (isEditableTarget(event.target)) {
+        return;
+      }
+      const direction = getMoveDirectionFromKey(event.key);
+      if (!direction) {
+        return;
+      }
+      event.preventDefault();
+      manager.setMoveState(direction, true);
+    };
+
+    const handleMoveKeyup = (event) => {
+      const direction = getMoveDirectionFromKey(event.key);
+      if (!direction) {
+        return;
+      }
+      event.preventDefault();
+      manager.setMoveState(direction, false);
     };
 
     const handleVisibilityChange = () => {
@@ -151,6 +238,8 @@ function App() {
     };
 
     window.addEventListener("blur", handleWindowBlur);
+    window.addEventListener("keydown", handleMoveKeydown);
+    window.addEventListener("keyup", handleMoveKeyup);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     if (DEBUG_HOTSPOTS) {
@@ -466,6 +555,8 @@ function App() {
         window.removeEventListener("keydown", handleKeydown);
       }
       window.removeEventListener("blur", handleWindowBlur);
+      window.removeEventListener("keydown", handleMoveKeydown);
+      window.removeEventListener("keyup", handleMoveKeyup);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       if (clearMessageTimer) {
         window.clearTimeout(clearMessageTimer);
@@ -476,6 +567,23 @@ function App() {
 
   return (
     <div className="app-root">
+      {needsLandscape ? (
+        <div className="orientation-overlay" role="presentation">
+          <div className="orientation-card">
+            <div className="orientation-title">请横屏体验</div>
+            <div className="orientation-body">
+              为保证热点与画面一致，请将手机横屏。
+            </div>
+            <button
+              className="orientation-button"
+              type="button"
+              onClick={requestLandscape}
+            >
+              进入横屏
+            </button>
+          </div>
+        </div>
+      ) : null}
       {webglReady ? (
         <div className="scene-root" ref={mountRef} />
       ) : (

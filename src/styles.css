@@ -25,16 +25,46 @@ body {
   height: 100%;
 }
 
-@media (max-width: 900px) and (orientation: portrait) {
-  .app-root {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100vh;
-    height: 100vw;
-    transform: translate(-50%, -50%) rotate(90deg);
-    transform-origin: center;
-  }
+.orientation-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 5, 5, 0.78);
+  z-index: 10;
+  padding: 16px;
+}
+
+.orientation-card {
+  width: min(360px, 88vw);
+  border-radius: 16px;
+  padding: 18px;
+  background: rgba(18, 18, 18, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  display: grid;
+  gap: 10px;
+}
+
+.orientation-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.orientation-body {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.orientation-button {
+  justify-self: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.16);
+  color: #f2f2f2;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .scene-root {
@@ -305,6 +335,7 @@ body {
   place-items: center;
   z-index: 5;
   padding: 16px;
+  overflow: auto;
 }
 
 .puzzle-card {
@@ -320,6 +351,8 @@ body {
   opacity: 0;
   transform: translateY(12px) scale(0.98);
   animation: popup-fade 0.5s ease forwards;
+  max-height: 88vh;
+  overflow: auto;
 }
 
 .puzzle-header {
@@ -447,6 +480,7 @@ body {
   font-weight: 600;
   cursor: grab;
   user-select: none;
+  touch-action: none;
 }
 
 .seal-hint {
@@ -469,6 +503,12 @@ body {
   justify-content: center;
   gap: 6px;
   background: rgba(12, 12, 12, 0.6);
+  touch-action: none;
+}
+
+.seal-slot--active {
+  border-color: rgba(247, 213, 156, 0.85);
+  box-shadow: 0 0 0 2px rgba(247, 213, 156, 0.25);
 }
 
 .seal-slot-label {
@@ -814,6 +854,16 @@ body {
 
   .synthesis-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .puzzle-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .puzzle-tile img {
+    height: 120px;
   }
 }
 

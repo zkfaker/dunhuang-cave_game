@@ -19,7 +19,10 @@ function SealMatchingPuzzle({
 
   const [assignments, setAssignments] = useState(initialAssignments);
   const [status, setStatus] = useState("");
+  const [dragTokenId, setDragTokenId] = useState(null);
+  const [dragOverSlotId, setDragOverSlotId] = useState(null);
   const resetTimerRef = useRef(null);
+  const dragPointerIdRef = useRef(null);
 
   useEffect(() => {
     return () => {
@@ -74,6 +77,50 @@ function SealMatchingPuzzle({
     });
   };
 
+  useEffect(() => {
+    if (!dragTokenId) {
+      return undefined;
+    }
+
+    const handlePointerMove = (event) => {
+      if (
+        dragPointerIdRef.current !== null &&
+        event.pointerId !== dragPointerIdRef.current
+      ) {
+        return;
+      }
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      const slotElement = element?.closest?.(".seal-slot");
+      const slotId = slotElement?.dataset?.slotId || null;
+      setDragOverSlotId(slotId);
+    };
+
+    const finishDrag = (event) => {
+      if (
+        dragPointerIdRef.current !== null &&
+        event.pointerId !== dragPointerIdRef.current
+      ) {
+        return;
+      }
+      if (dragOverSlotId) {
+        handleDrop(dragOverSlotId, dragTokenId);
+      }
+      dragPointerIdRef.current = null;
+      setDragTokenId(null);
+      setDragOverSlotId(null);
+    };
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", finishDrag);
+    window.addEventListener("pointercancel", finishDrag);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", finishDrag);
+      window.removeEventListener("pointercancel", finishDrag);
+    };
+  }, [dragTokenId, dragOverSlotId]);
+
   const handleDragStart = (tokenId) => (event) => {
     event.dataTransfer.setData("text/plain", tokenId);
   };
@@ -107,6 +154,15 @@ function SealMatchingPuzzle({
                 className="seal-token"
                 draggable
                 onDragStart={handleDragStart(token.id)}
+                onPointerDown={(event) => {
+                  if (event.pointerType === "mouse") {
+                    return;
+                  }
+                  event.preventDefault();
+                  dragPointerIdRef.current = event.pointerId;
+                  event.currentTarget.setPointerCapture?.(event.pointerId);
+                  setDragTokenId(token.id);
+                }}
               >
                 {token.label}
               </div>
@@ -122,7 +178,10 @@ function SealMatchingPuzzle({
               return (
                 <div
                   key={slot.id}
-                  className="seal-slot"
+                  className={`seal-slot${
+                    dragOverSlotId === slot.id ? " seal-slot--active" : ""
+                  }`}
+                  data-slot-id={slot.id}
                   onDragOver={allowDrop}
                   onDrop={(event) => {
                     event.preventDefault();
