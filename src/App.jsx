@@ -92,7 +92,6 @@ function App() {
   const [decisionOpen, setDecisionOpen] = useState(false);
   const [synthesisOpen, setSynthesisOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [needsLandscape, setNeedsLandscape] = useState(false);
 
   const handleMoveStart = (direction) => {
     managerRef.current?.setMoveState(direction, true);
@@ -110,41 +109,6 @@ function App() {
     }
   };
 
-  const requestLandscape = () => {
-    if (screen.orientation?.lock) {
-      screen.orientation.lock("landscape").catch(() => {});
-    }
-  };
-
-  useEffect(() => {
-    const query = window.matchMedia("(orientation: portrait)");
-    const update = () => {
-      const isPortrait = query.matches;
-      const isSmallScreen = window.innerWidth <= 900;
-      if (isPortrait && isSmallScreen) {
-        requestLandscape();
-      }
-      setNeedsLandscape(isPortrait && isSmallScreen);
-    };
-
-    update();
-
-    if (query.addEventListener) {
-      query.addEventListener("change", update);
-    } else {
-      query.addListener(update);
-    }
-    window.addEventListener("resize", update);
-
-    return () => {
-      if (query.removeEventListener) {
-        query.removeEventListener("change", update);
-      } else {
-        query.removeListener(update);
-      }
-      window.removeEventListener("resize", update);
-    };
-  }, []);
 
   useEffect(() => {
     const supported = isWebGLAvailable();
@@ -567,23 +531,6 @@ function App() {
 
   return (
     <div className="app-root">
-      {needsLandscape ? (
-        <div className="orientation-overlay" role="presentation">
-          <div className="orientation-card">
-            <div className="orientation-title">请横屏体验</div>
-            <div className="orientation-body">
-              为保证热点与画面一致，请将手机横屏。
-            </div>
-            <button
-              className="orientation-button"
-              type="button"
-              onClick={requestLandscape}
-            >
-              进入横屏
-            </button>
-          </div>
-        </div>
-      ) : null}
       {webglReady ? (
         <div className="scene-root" ref={mountRef} />
       ) : (

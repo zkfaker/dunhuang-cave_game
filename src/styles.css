@@ -25,46 +25,16 @@ body {
   height: 100%;
 }
 
-.orientation-overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(5, 5, 5, 0.78);
-  z-index: 10;
-  padding: 16px;
-}
-
-.orientation-card {
-  width: min(360px, 88vw);
-  border-radius: 16px;
-  padding: 18px;
-  background: rgba(18, 18, 18, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  text-align: center;
-  display: grid;
-  gap: 10px;
-}
-
-.orientation-title {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.orientation-body {
-  font-size: 13px;
-  opacity: 0.8;
-}
-
-.orientation-button {
-  justify-self: center;
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.16);
-  color: #f2f2f2;
-  font-weight: 600;
-  cursor: pointer;
+@media (max-width: 900px) and (orientation: portrait) {
+  .app-root {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vh;
+    height: 100vw;
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center;
+  }
 }
 
 .scene-root {
