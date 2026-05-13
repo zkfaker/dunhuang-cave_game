@@ -9,6 +9,7 @@ import SealMatchingPuzzle from "./components/SealMatchingPuzzle.jsx";
 import ChoiceDialog from "./components/ChoiceDialog.jsx";
 import FragmentSynthesis from "./components/FragmentSynthesis.jsx";
 import ConfettiBurst from "./components/ConfettiBurst.jsx";
+import TipsOverlay from "./components/TipsOverlay.jsx";
 import { isWebGLAvailable } from "./utils/webgl.js";
 
 const INITIAL_CAMERA_POSITION = [-89.0, -3.0, -24.6];
@@ -92,6 +93,7 @@ function App() {
   const [decisionOpen, setDecisionOpen] = useState(false);
   const [synthesisOpen, setSynthesisOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showTips, setShowTips] = useState(false);
 
   const handleMoveStart = (direction) => {
     managerRef.current?.setMoveState(direction, true);
@@ -165,6 +167,14 @@ function App() {
           return "left";
         case "d":
           return "right";
+        case "arrowup":
+          return "up";
+        case "arrowdown":
+          return "down";
+        case "arrowleft":
+          return "rotateLeft";
+        case "arrowright":
+          return "rotateRight";
         default:
           return null;
       }
@@ -280,7 +290,7 @@ function App() {
           onClose: () => {
             setDialog({
               title: "基础权限已解锁",
-              body: "恭喜您解锁基础权限，请前往西壁（中心柱后面）继续探秘。",
+              body: "恭喜您解锁基础权限，游戏正式开始！你需要集齐3个记忆碎片，请前往西壁（中心柱后面）继续探秘。",
               onClose: () => {
                 manager.setHotspotActive("west-clue", true);
               },
@@ -529,6 +539,24 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!webglReady || loading) {
+      return undefined;
+    }
+
+    const tipsTimer = window.setTimeout(() => {
+      setShowTips(true);
+    }, 1200);
+
+    return () => {
+      window.clearTimeout(tipsTimer);
+    };
+  }, [webglReady, loading]);
+
+  const handleTipsClose = () => {
+    setShowTips(false);
+  };
+
   return (
     <div className="app-root">
       {webglReady ? (
@@ -769,6 +797,7 @@ function App() {
       {showConfetti ? (
         <ConfettiBurst onComplete={() => setShowConfetti(false)} />
       ) : null}
+      {showTips ? <TipsOverlay onClose={handleTipsClose} /> : null}
       {webglReady && loading ? <LoadingOverlay progress={progress} /> : null}
     </div>
   );
